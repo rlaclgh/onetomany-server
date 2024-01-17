@@ -1,0 +1,46 @@
+= API 문서 (글의 제목)
+Test용 (부제)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[채팅방]]
+== 채팅방
+
+[채팅방 생성 API]
+=== 채팅방 생성 API
+
+operation::chat-room-controller-test/create-chat-room-test[snippets='http-request,request-headers,response-body,response-fields']
+
+[채팅방 구독 API]
+=== 채팅방 구독 API
+
+operation::chat-room-controller-test/subscribe-chat-room-test[snippets='http-request,request-headers,response-body,response-fields']
+
+[채팅방 수정 API]
+=== 채팅방 수정 API
+
+operation::chat-room-controller-test/can-update-test[snippets='http-request,request-headers,response-body,response-fields']
+
+[채팅방 리스트 API]
+=== 채팅방 리스트 API
+
+operation::chat-room-controller-test/get-chat-rooms-test[snippets='http-request,response-body,response-fields']
+
+[[회원가입로그인]]
+== 회원가입 로그인
+
+[회원가입 API]
+=== 회원가입 API
+
+operation::auth-controller-test/sign-up-test[snippets='http-request,response-body']
+
+[로그인 API]
+=== 로그인 API
+
+operation::auth-controller-test/sign-in-test[snippets='http-request,response-body,response-fields']
+
+
