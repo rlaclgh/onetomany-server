@@ -10,9 +10,7 @@ import com.rlaclgh.onetomany.dto.UpdateChatRoomDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -48,7 +46,7 @@ public class ChatRoomController {
   public ResponseEntity<ChannelDto> subscribeChatRoom(
       @CurrentUser() CustomUserDetails currentUser,
       @PathVariable("chatRoomId") Long chatRoomId
-  ) throws BadRequestException, NotFoundException {
+  ) {
 
     ChannelDto channelDto = chatRoomService.subscribeChatRoom(
         currentUser.getMember(), chatRoomId);
@@ -64,7 +62,7 @@ public class ChatRoomController {
       @CurrentUser() CustomUserDetails currentUser,
       @PathVariable("chatRoomId") Long chatRoomId,
       @RequestBody @Valid UpdateChatRoomDto updateChatRoomDto
-  ) throws NotFoundException {
+  ) {
 
     ChannelDto channelDto = this.chatRoomService.updateChatRoom(currentUser.getMember(), chatRoomId,
         updateChatRoomDto);

@@ -1,5 +1,6 @@
 package com.rlaclgh.onetomany.chat_room;
 
+import com.rlaclgh.onetomany.constant.ErrorCode;
 import com.rlaclgh.onetomany.dto.ChannelDto;
 import com.rlaclgh.onetomany.dto.ChatRoomDto;
 import com.rlaclgh.onetomany.dto.CreateChatRoomDto;
@@ -7,16 +8,13 @@ import com.rlaclgh.onetomany.dto.UpdateChatRoomDto;
 import com.rlaclgh.onetomany.entity.Channel;
 import com.rlaclgh.onetomany.entity.ChatRoom;
 import com.rlaclgh.onetomany.entity.Member;
+import com.rlaclgh.onetomany.exception.CustomException;
 import com.rlaclgh.onetomany.repository.ChannelRepository;
 import com.rlaclgh.onetomany.repository.ChatRoomRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,10 +27,6 @@ public class ChatRoomService {
 
   @Autowired
   private ChannelRepository channelRepository;
-
-
-  @PersistenceContext
-  private EntityManager entityManager;
 
 
   public ChannelDto createChatRoom(Member member,
@@ -57,21 +51,20 @@ public class ChatRoomService {
   }
 
 
-  public ChannelDto subscribeChatRoom(Member member, Long chatRoomId)
-      throws BadRequestException, NotFoundException {
+  public ChannelDto subscribeChatRoom(Member member, Long chatRoomId) {
 
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-        .orElseThrow(NotFoundException::new);
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "존재하지 않은 채팅방입니다."));
 
     if (chatRoom.getOwner().getId().equals(member.getId())) {
-      throw new BadRequestException("본인 채팅방을 구독할 수 없습니다.");
+      throw new CustomException(ErrorCode.BAD_REQUEST, "자신의 채팅방은 구독할 수 없습니다.");
     }
 
     Channel channel1 = channelRepository.findByOwnerIdAndChatRoomId(member.getId(),
         chatRoom.getId());
 
     if (channel1 != null) {
-      throw new BadRequestException("이미 구독한 채팅방입니다.");
+      throw new CustomException(ErrorCode.BAD_REQUEST, "이미 구독한 채팅방입니다.");
     }
 
     Channel channel = channelRepository.save(
@@ -88,11 +81,10 @@ public class ChatRoomService {
 
   @Transactional
   public ChannelDto updateChatRoom(Member member, Long chatRoomId,
-      UpdateChatRoomDto updateChatRoomDto)
-      throws NotFoundException {
+      UpdateChatRoomDto updateChatRoomDto) {
 
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-        .orElseThrow(NotFoundException::new);
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "존재하지 않은 채팅방입니다."));
 
     if (updateChatRoomDto.getName() != null) {
       chatRoom.setName(updateChatRoomDto.getName());
