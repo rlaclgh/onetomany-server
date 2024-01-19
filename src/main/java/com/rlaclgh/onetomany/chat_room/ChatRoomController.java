@@ -8,6 +8,7 @@ import com.rlaclgh.onetomany.dto.ChannelDto;
 import com.rlaclgh.onetomany.dto.CreateChatRoomDto;
 import com.rlaclgh.onetomany.dto.UpdateChatRoomDto;
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ChatRoomController {
     ChannelDto createChatRoomResponse = chatRoomService.createChatRoom(
         currentUser.getMember(),
         createChatRoomDto);
-    return ResponseEntity.created(null).body(createChatRoomResponse);
+    return ResponseEntity.created(URI.create(" ")).body(createChatRoomResponse);
   }
 
 

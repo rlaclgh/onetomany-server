@@ -113,7 +113,6 @@ public class ChatRoomService {
 
 
   public List<ChannelDto> getChatRooms() {
-    List<ChannelDto> chatRooms = chatRoomRepository.findChatRooms();
-    return chatRooms;
+    return chatRoomRepository.findChatRooms();
   }
 }
