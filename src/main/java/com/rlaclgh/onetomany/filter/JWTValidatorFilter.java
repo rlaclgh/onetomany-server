@@ -32,7 +32,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
   ));
 
   static Set<String> getMethodSet = new HashSet<>(Arrays.asList(
-      "/chat_room"
+      "/chat_room", "/"
   ));
 
 

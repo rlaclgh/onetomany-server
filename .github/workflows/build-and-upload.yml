@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      -
 
 jobs:
   build:
@@ -20,6 +19,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Create secret.properties
+        run: |
+          echo "${{ secrets.ENV }}" > ./src/main/resources/secret.properties
+
+
       - name: Build JAR
         run: |
-          ./gradlew clean build
+          ./gradlew clean build -x test

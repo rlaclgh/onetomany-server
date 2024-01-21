@@ -22,10 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitData implements ApplicationRunner {
 
-
   @Autowired
   private RoleRepository roleRepository;
-
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -36,13 +34,12 @@ public class InitData implements ApplicationRunner {
   @Autowired
   private MemberRepository memberRepository;
 
-
   @Transactional
   @Override
-  public void run(ApplicationArguments args) throws Exception {
+  public void run(ApplicationArguments args) {
 
-    log.info("InitData");
-
+//    log.info("InitData");
+//
     Role roleUser = new Role(1, "ROLE_USER");
     Role roleAdmin = new Role(2, "ROLE_ADMIN");
 

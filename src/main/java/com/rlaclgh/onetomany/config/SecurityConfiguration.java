@@ -27,7 +27,7 @@ public class SecurityConfiguration {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000"));
+    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000", "https://onetomany.io"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -42,6 +42,8 @@ public class SecurityConfiguration {
     http.authorizeHttpRequests(auth -> auth
         .requestMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
         .requestMatchers("/chat_room").permitAll()
+        .requestMatchers("/").permitAll()
+
         .anyRequest().authenticated()
     );
 
