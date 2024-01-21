@@ -21,7 +21,7 @@ jobs:
 
       - name: Create secret.properties
         run: |
-          echo "${{ secrets.ENV }}" > ./src/main/resources/secret.properties
+          echo "${{ secrets.ENV }}" > src/main/resources/secret.properties
 
 
       - name: Build JAR
