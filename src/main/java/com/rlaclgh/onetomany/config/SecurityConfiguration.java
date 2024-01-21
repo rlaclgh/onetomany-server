@@ -27,7 +27,8 @@ public class SecurityConfiguration {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000", "https://onetomany.io"));
+    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:3000", "https://onetomany.io",
+        "https://vercel.com/rlaclgh/onetomany-client/GNH9GPi4P9WawDaz5zeXgirvzK9h"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
