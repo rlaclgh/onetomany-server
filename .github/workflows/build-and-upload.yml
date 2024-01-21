@@ -30,7 +30,7 @@ jobs:
 
       - name: Make a zip file
         run: |
-          zip $GITHUB_SHA.zip build/libs/onetomany-0.0.1-SNAPSHOT.jar
+          zip $GITHUB_SHA.zip build/libs/onetomany-0.0.1-SNAPSHOT.jar appspec.yml -r scripts
         shell: bash
 
       - name: Configure AWS credentials
