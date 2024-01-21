@@ -45,7 +45,7 @@ jobs:
 
       - name: Request Deployment
         run: aws deploy create-deployment
-          --application-name onetomany-server
+          --application-name onetomany-code-deploy
           --deployment-config-name CodeDeployDefault.OneAtATime
           --deployment-group-name onetomany-server
           --s3-location bucket=onetomany-server,bundleType=zip,key=deploy/$GITHUB_SHA.zip
