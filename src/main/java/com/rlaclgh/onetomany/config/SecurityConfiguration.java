@@ -29,7 +29,8 @@ public class SecurityConfiguration {
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(
-        Arrays.asList("http://127.0.0.1:3000", "https://onetomany.site"));
+        Arrays.asList("http://127.0.0.1:3000", "https://onetomany.site",
+            "https://www.onetomany.site"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
