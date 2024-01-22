@@ -5,6 +5,7 @@ import com.rlaclgh.onetomany.aop.MyChatRoom;
 import com.rlaclgh.onetomany.config.CurrentUser;
 import com.rlaclgh.onetomany.config.CustomUserDetails;
 import com.rlaclgh.onetomany.dto.ChannelDto;
+import com.rlaclgh.onetomany.dto.ChatRoomDto;
 import com.rlaclgh.onetomany.dto.CreateChatRoomDto;
 import com.rlaclgh.onetomany.dto.UpdateChatRoomDto;
 import jakarta.validation.Valid;
@@ -73,12 +74,17 @@ public class ChatRoomController {
 
   @GetMapping("")
   public ResponseEntity<List<ChannelDto>> getChatRooms() {
-
     List<ChannelDto> channels = chatRoomService.getChatRooms();
-
     return ResponseEntity.ok(channels);
+  }
 
 
+  @GetMapping("{chatRoomId}")
+  public ResponseEntity<ChatRoomDto> getChatRoom(
+      @PathVariable("chatRoomId") Long chatRoomId
+  ) {
+    ChatRoomDto chatRoom = chatRoomService.getChatRoom(chatRoomId);
+    return ResponseEntity.ok(chatRoom);
   }
 
 

@@ -11,20 +11,20 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rlaclgh.onetomany.auth.AuthService;
 import com.rlaclgh.onetomany.config.CustomUserDetails;
+import com.rlaclgh.onetomany.config.CustomUserDetailsService;
 import com.rlaclgh.onetomany.config.RestDocsConfig;
-import com.rlaclgh.onetomany.constant.Seed;
 import com.rlaclgh.onetomany.dto.ChannelDto;
 import com.rlaclgh.onetomany.dto.CreateChatRoomDto;
 import com.rlaclgh.onetomany.dto.SignInDto;
+import com.rlaclgh.onetomany.dto.SignUpDto;
 import com.rlaclgh.onetomany.dto.UpdateChatRoomDto;
-import com.rlaclgh.onetomany.entity.Member;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,12 +39,13 @@ import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.security.config.BeanIds;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.DelegatingFilterProxy;
@@ -52,8 +53,10 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 @ExtendWith({RestDocumentationExtension.class})
 @Import(RestDocsConfig.class)
+@ActiveProfiles("test")
 class ChatRoomControllerTest {
 
 
@@ -62,6 +65,10 @@ class ChatRoomControllerTest {
 
   @Autowired
   protected RestDocumentationResultHandler restDocs;
+
+
+  @Autowired
+  private CustomUserDetailsService customUserDetailsService;
 
 
   @Autowired
@@ -95,57 +102,18 @@ class ChatRoomControllerTest {
   ObjectMapper objectMapper = new ObjectMapper();
 
 
-  public static RequestPostProcessor testUser() {
-    CustomUserDetails customUserDetails = new CustomUserDetails(
-        new Member(1L, "rlaclgh11@gmail.com", "password11")
-    );
-    return user(customUserDetails);
-  }
-
-  public static RequestPostProcessor testUser2() {
-    CustomUserDetails customUserDetails = new CustomUserDetails(
-        new Member(2L, "rlaclgh22@gmail.com", "password11")
-    );
-    return user(customUserDetails);
-  }
-
-
-  public ChannelDto createChatRoom() {
-
-    String name = "chatroom1";
-    String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
-    String description = "chatroom1 description";
-
-    ChannelDto channelDto = chatRoomService.createChatRoom(Seed.user1,
-        new CreateChatRoomDto(name, imageUrl, description));
-
-    return channelDto;
-  }
-
-
-  private ResponseFieldsSnippet channelDto() {
-    return responseFields(
-        fieldWithPath("id").description("채널 ID"),
-        fieldWithPath("isHost").description("채팅방 호스트여부"),
-        fieldWithPath("chatRoom.id").description("채팅방 ID"),
-        fieldWithPath("chatRoom.name").description("채팅방 이름"),
-        fieldWithPath("chatRoom.imageUrl").description("채팅방 이미지"),
-        fieldWithPath("chatRoom.description").description("채팅방 설명")
-    );
-  }
-
-
-  public String signIn(Member member) {
-
-    return authService.signIn(new SignInDto(member.getEmail(), member.getPassword()));
-  }
-
   @Test
   @DisplayName("chat room을 생성할 수 있다.")
+  @Transactional
   public void createChatRoomTest() throws Exception {
 
-    String token = signIn(Seed.user1);
+    // Given
+    String email = "rlaclgh11@gmail.com";
+    String password = "password11";
+    authService.signUp(new SignUpDto(email, password));
+    String token = authService.signIn(new SignInDto(email, password));
 
+    // When
     String name = "chatroom1";
     String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
     String description = "chatroom1 description";
@@ -155,12 +123,10 @@ class ChatRoomControllerTest {
     );
 
     mockMvc.perform(post("/chat_room")
-//            .with(testUser())
-                .content(objectMapper.writeValueAsString(createChatRoomDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
+            .content(objectMapper.writeValueAsString(createChatRoomDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + token)
         )
-//        .andExpect(jsonPath("$.channel.isHost").value(true))
         .andExpect(jsonPath("$.chatRoom.name").value(name))
         .andExpect(jsonPath("$.chatRoom.imageUrl").value(imageUrl))
         .andExpect(jsonPath("$.chatRoom.description").value(description))
@@ -181,30 +147,43 @@ class ChatRoomControllerTest {
                     )
             )
         ));
-//        .andDo(restDocs.document(channelDto()));
 
   }
 
 
   @Test
   @DisplayName("생성된 채팅방을 구독할 수 있다.")
+  @Transactional
   public void subscribeChatRoomTest() throws Exception {
 
-    //    user1 created ChatRoom
+    // Given
+    String email1 = "rlaclgh11@gmail.com";
+    String password1 = "password11";
+    authService.signUp(new SignUpDto(email1, password1));
+
+    String email2 = "rlaclgh22@gmail.com";
+    String password2 = "password22";
+    authService.signUp(new SignUpDto(email2, password2));
+
+    //// user1 이 채팅방 생성
     String name = "chatroom1";
     String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
     String description = "chatroom1 description";
 
-    ChannelDto channelDto = chatRoomService.createChatRoom(Seed.user1,
-        new CreateChatRoomDto(name, imageUrl, description));
+    CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email1);
 
-    String token = signIn(Seed.user2);
+    ChannelDto channelDto = chatRoomService.createChatRoom(userDetails.getMember(),
+        new CreateChatRoomDto(
+            name, imageUrl, description
+        ));
+
+    //// user2 로그인
+    String token = authService.signIn(new SignInDto(email2, password2));
 
     mockMvc.perform(post("/chat_room/{chatRoomId}/subscribe",
-                channelDto.getChatRoom().getId())
-//            .with(testUser2())
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
+            channelDto.getChatRoom().getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + token)
         )
         .andExpect(jsonPath("$.chatRoom.name").value(channelDto.getChatRoom().getName()))
         .andExpect(jsonPath("$.chatRoom.imageUrl").value(channelDto.getChatRoom().getImageUrl()))
@@ -232,80 +211,28 @@ class ChatRoomControllerTest {
   }
 
 
-  //  @Test
-  @DisplayName("없는 채팅방은 구독할 수 없다.")
-  public void nonExistChatRoomTest() throws Exception {
-    mockMvc.perform(post("/chat_room/{chatRoomId}/subscribe", 999999L)
-            .with(testUser())
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isNotFound());
-  }
-
-  //  @Test
-  @DisplayName("본인이 만든 chatroom은 구독할 수 없다.")
-  public void subscribeMineTest() throws Exception {
-    ChannelDto channelDto = createChatRoom();
-
-    mockMvc.perform(post("/chat_room/{chatRoomId}/subscribe", channelDto.getChatRoom().getId())
-            .with(testUser())
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isBadRequest());
-  }
-
-  //  @Test
-  @DisplayName("이미 구독한 chatroom은 다시 구독할 수 없다.")
-  public void alreadySubscribedTest() throws Exception {
-    ChannelDto channelDto = createChatRoom();
-
-    mockMvc.perform(post("/chat_room/{chatRoomId}/subscribe", channelDto.getChatRoom().getId())
-            .with(testUser2())
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk());
-
-    mockMvc.perform(post("/chat_room/{chatRoomId}/subscribe", channelDto.getChatRoom().getId())
-            .with(testUser2())
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isBadRequest());
-  }
-
-  //  @Test
-  @DisplayName("본인의 chat_room만을 수정할 수 있다.")
-  public void canUpdateMineTest() throws Exception {
-    ChannelDto channelDto = createChatRoom();
-
-    String name = "chatroom_updated";
-    String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
-    String description = "chatroom1 description_updated";
-
-    UpdateChatRoomDto updateChatRoomDto = new UpdateChatRoomDto(
-        name, imageUrl, description
-    );
-
-    mockMvc.perform(patch("/chat_room/{chatRoomId}", channelDto.getChatRoom().getId())
-            .with(testUser2())
-            .content(objectMapper.writeValueAsString(updateChatRoomDto))
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isNotFound());
-  }
-
   @Test
   @DisplayName("본인의 chat_room을 수정할 수 있다.")
+  @Transactional
   public void canUpdateTest() throws Exception {
+    // Given
+    String email = "rlaclgh11@gmail.com";
+    String password = "password11";
+    authService.signUp(new SignUpDto(email, password));
+    String token = authService.signIn(new SignInDto(email, password));
 
-    //    user1 created ChatRoom
     String name = "chatroom1";
-    String imageUrl = "https://mymu.s3.ap-northeast-2.amazonaws.com/default-profile.png";
+    String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
     String description = "chatroom1 description";
 
-    ChannelDto channelDto = chatRoomService.createChatRoom(Seed.user1,
-        new CreateChatRoomDto(name, imageUrl, description));
+    CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-    String token = signIn(Seed.user1);
+    ChannelDto channelDto = chatRoomService.createChatRoom(userDetails.getMember(),
+        new CreateChatRoomDto(
+            name, imageUrl, description
+        ));
+
+    // When
 
     String nameUpdated = "chatroom_updated";
     String imageUrlUpdated = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
@@ -346,7 +273,14 @@ class ChatRoomControllerTest {
 
   @Test
   @DisplayName("채팅방 리스트를 불러올 수 있다.")
+  @Transactional
   public void getChatRoomsTest() throws Exception {
+
+    // Given
+    String email = "rlaclgh11@gmail.com";
+    String password = "password11";
+    authService.signUp(new SignUpDto(email, password));
+    CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
     String name1 = "chatroom1";
     String imageUrl1 = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
@@ -356,10 +290,10 @@ class ChatRoomControllerTest {
     String imageUrl2 = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
     String description2 = "chatroom2 description";
 
-    chatRoomService.createChatRoom(Seed.user1,
+    chatRoomService.createChatRoom(userDetails.getMember(),
         new CreateChatRoomDto(name1, imageUrl1, description1));
 
-    chatRoomService.createChatRoom(Seed.user1,
+    chatRoomService.createChatRoom(userDetails.getMember(),
         new CreateChatRoomDto(name2, imageUrl2, description2));
 
     mockMvc.perform(get("/chat_room"))

@@ -5,17 +5,14 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rlaclgh.onetomany.config.RestDocsConfig;
-import com.rlaclgh.onetomany.constant.RoleEnum;
 import com.rlaclgh.onetomany.dto.SignInDto;
 import com.rlaclgh.onetomany.dto.SignUpDto;
-import com.rlaclgh.onetomany.entity.Member;
-import com.rlaclgh.onetomany.repository.MemberRepository;
-import com.rlaclgh.onetomany.repository.RoleRepository;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,18 +28,22 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.security.config.BeanIds;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 @ExtendWith({RestDocumentationExtension.class})
 @Import(RestDocsConfig.class)
+@ActiveProfiles("test")
 class AuthControllerTest {
 
   @Autowired
@@ -53,15 +54,6 @@ class AuthControllerTest {
 
   @Autowired
   protected RestDocumentationResultHandler restDocs;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  @Autowired
-  private MemberRepository memberRepository;
-
-  @Autowired
-  private RoleRepository roleRepository;
 
 
   @BeforeEach
@@ -89,6 +81,7 @@ class AuthControllerTest {
 
   @Test
   @DisplayName("로그인 할 수 있다.")
+  @Transactional
   public void signInTest() throws Exception {
 
     String email = "rlaclgh12@gmail.com";
@@ -114,47 +107,12 @@ class AuthControllerTest {
         ));
   }
 
-  //  @Test
-  public void signUpDtoTest() throws Exception {
-
-    String email = "rlaclgh12";
-    String password = "password";
-
-    SignUpDto signUpDto = new SignUpDto(email, password);
-
-    mockMvc.perform(
-            post("/auth/sign-up").content(objectMapper.writeValueAsString(signUpDto))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest());
-  }
-
-  //  @Test
-  public void signUpDuplicatedTest() throws Exception {
-
-    String email = "duplicated@gmail.com";
-    String password = "password11";
-
-    Member member = new Member(email, passwordEncoder.encode(password));
-
-    member.setRole(
-        roleRepository.getReferenceById(RoleEnum.USER.getId()));
-
-    memberRepository.save(member);
-
-    SignUpDto signUpDto = new SignUpDto(email, password);
-
-    mockMvc.perform(
-            post("/auth/sign-up").content(objectMapper.writeValueAsString(signUpDto)).contentType(
-                MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest());
-
-
-  }
 
   @Test
   @DisplayName("회원가입 할 수 있다.")
+  @Transactional
   public void signUpTest() throws Exception {
-    String email = "rlaclgh000011@gmail.com";
+    String email = "rlaclgh000011123@gmail.com";
     String password = "password11";
     SignUpDto signUpDto = new SignUpDto(email, password);
 

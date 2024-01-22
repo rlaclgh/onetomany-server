@@ -7,6 +7,7 @@ import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -41,8 +42,8 @@ public class SecurityConfiguration {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
-        .requestMatchers("/chat_room").permitAll()
+        .requestMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll()
+        .requestMatchers(HttpMethod.GET, "/chat_room/*", "/chat_room").permitAll()
         .requestMatchers("/").permitAll()
 
         .anyRequest().authenticated()

@@ -24,6 +24,10 @@ jobs:
         run: |
           echo "${{ secrets.ENV }}" > src/main/resources/secret.properties
 
+      - name: Create secret-test.properties
+        run: |
+          echo "${{ secrets.TEST_ENV }}" > src/main/resources/secret-test.properties
+          
       - name: Build JAR
         run: |
           ./gradlew clean build

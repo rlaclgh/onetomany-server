@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +33,7 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
   ));
 
   static Set<String> getMethodSet = new HashSet<>(Arrays.asList(
-      "/chat_room", "/"
+      "/chat_room", "/", ""
   ));
 
 
@@ -83,12 +84,14 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
     String path = request.getRequestURI().substring(request.getContextPath().length());
     String method = request.getMethod();
 
-    System.out.println(method);
+    System.out.println(request.getRequestURI());
 
     if (Objects.equals(method, "POST")) {
       return postMethodSet.contains(path);
     } else if (Objects.equals(method, "GET")) {
-      return getMethodSet.contains(path);
+
+      String regexPattern = "/chat_room/\\d+";
+      return getMethodSet.contains(path) || Pattern.matches(regexPattern, path);
     }
     return false;
   }

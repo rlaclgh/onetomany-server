@@ -115,4 +115,19 @@ public class ChatRoomService {
   public List<ChannelDto> getChatRooms() {
     return chatRoomRepository.findChatRooms();
   }
+
+
+  public ChatRoomDto getChatRoom(Long chatRoomId) {
+    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "존재하지 않은 채팅방입니다."));
+
+    return new ChatRoomDto(
+        chatRoom.getId(),
+        chatRoom.getName(),
+        chatRoom.getImageUrl(),
+        chatRoom.getDescription()
+    );
+
+
+  }
 }
