@@ -10,6 +10,6 @@ public class IndexController {
 
   @GetMapping("")
   public ResponseEntity<String> test() {
-    return ResponseEntity.ok("hello5");
+    return ResponseEntity.ok("hello6");
   }
 }
