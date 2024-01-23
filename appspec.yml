@@ -29,5 +29,5 @@ hooks:
       runas: ubuntu
 
   ValidateService:
-    - location: scripts/server-validate.sh
+    - location: scripts/validate-server.sh
       runas: ubuntu
