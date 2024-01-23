@@ -52,4 +52,4 @@ jobs:
           --application-name onetomany-code-deploy
           --deployment-config-name CodeDeployDefault.OneAtATime
           --deployment-group-name onetomany-code-deploy
-          --s3-location bucket=onetomany-server,bundleType=zip,key=deploy/$GITHUB_SHA.zip
+          --s3-location bucket=onetomany-server,bundleType=zip,key=onetomany/$GITHUB_SHA.zip
