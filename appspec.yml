@@ -14,6 +14,12 @@ permissions:
 
 hooks:
 
+  Install:
+    - runas: ubuntu
+      commands:
+        - chmod +x /home/ubuntu/deploy/scripts/before-install.sh
+        - chmod +x /home/ubuntu/deploy/scripts/after-install.sh
+
   BeforeInstall:
     - location: scripts/before-install.sh
       runas: ubuntu
