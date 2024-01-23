@@ -2,7 +2,7 @@
 
 while [ true ]
 do
-    if [ "$(curl -s http://localhost:8080)" = 'hello1' ]
+    if [ "$(curl -s http://localhost:8080)" = 'hello' ]
     then
         exit 0
     else
