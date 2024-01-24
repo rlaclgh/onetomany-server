@@ -68,3 +68,6 @@ replay_pid*
 
 secret.properties
 secret-test.properties
+
+*.env
+credentials
