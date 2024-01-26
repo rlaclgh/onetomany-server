@@ -6,6 +6,7 @@ import com.rlaclgh.onetomany.config.CustomUserDetails;
 import com.rlaclgh.onetomany.dto.SignInDto;
 import com.rlaclgh.onetomany.dto.SignInResponse;
 import com.rlaclgh.onetomany.dto.SignUpDto;
+import com.rlaclgh.onetomany.entity.Member;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,10 @@ public class AuthController {
 
 
   @GetMapping("/me")
-  public ResponseEntity<CustomUserDetails> getMe(
+  public ResponseEntity<Member> getMe(
       @CurrentUser() CustomUserDetails currentUser
   ) {
 
-    return ResponseEntity.ok().body(currentUser);
+    return ResponseEntity.ok().body(currentUser.getMember());
   }
 }

@@ -17,4 +17,7 @@ public class ChannelDto {
   private ChatRoomDto chatRoom;
 
 
+  private ChatDto lastChat;
+
+
 }

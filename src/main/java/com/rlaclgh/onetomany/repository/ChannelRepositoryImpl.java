@@ -1,5 +1,6 @@
 package com.rlaclgh.onetomany.repository;
 
+
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rlaclgh.onetomany.dto.ChannelDto;
@@ -11,31 +12,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
-
+public class ChannelRepositoryImpl implements ChannelRepositoryCustom {
 
   @Autowired
   private JPAQueryFactory queryFactory;
 
   @Override
-  public List<ChannelDto> findChatRooms() {
+  public List<ChannelDto> getChannelsWithChatRoom(Long ownerId) {
 
     QChatRoom chatRoom = QChatRoom.chatRoom;
     QChannel channel = QChannel.channel;
 
-    List<ChannelDto> chatRooms = queryFactory
-        .select(Projections.constructor(ChannelDto.class,
+    List<ChannelDto> channels = queryFactory
+        .select(
+            Projections.constructor(ChannelDto.class,
                 channel.id, channel.isHost,
                 Projections.constructor(ChatRoomDto.class,
                     chatRoom.id, chatRoom.name, chatRoom.imageUrl, chatRoom.description)
             )
         )
-        .from(chatRoom)
-        .leftJoin(channel)
-        .on(channel.chatRoom.id.eq(chatRoom.id).and(channel.isHost.isTrue()))
+        .from(channel)
+        .leftJoin(chatRoom)
+        .where(channel.owner.id.eq(ownerId))
+        .on(channel.chatRoom.id.eq(chatRoom.id))
         .fetchJoin()
         .fetch();
-    
-    return chatRooms;
+
+    return channels;
   }
 }
