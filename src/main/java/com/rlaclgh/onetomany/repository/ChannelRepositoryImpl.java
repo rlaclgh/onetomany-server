@@ -23,7 +23,7 @@ public class ChannelRepositoryImpl implements ChannelRepositoryCustom {
     QChatRoom chatRoom = QChatRoom.chatRoom;
     QChannel channel = QChannel.channel;
 
-    List<ChannelDto> channels = queryFactory
+    return queryFactory
         .select(
             Projections.constructor(ChannelDto.class,
                 channel.id, channel.isHost,
@@ -37,7 +37,5 @@ public class ChannelRepositoryImpl implements ChannelRepositoryCustom {
         .on(channel.chatRoom.id.eq(chatRoom.id))
         .fetchJoin()
         .fetch();
-
-    return channels;
   }
 }

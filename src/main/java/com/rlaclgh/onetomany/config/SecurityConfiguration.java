@@ -4,6 +4,7 @@ package com.rlaclgh.onetomany.config;
 import com.rlaclgh.onetomany.filter.ExceptionHandlerFilter;
 import com.rlaclgh.onetomany.filter.JWTValidatorFilter;
 import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +30,14 @@ public class SecurityConfiguration {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
+
     configuration.setAllowedOrigins(
         Arrays.asList("http://127.0.0.1:3000", "https://onetomany.site",
             "https://www.onetomany.site"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+//    configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+    configuration.setAllowedHeaders(List.of("*"));
+//    configuration.setAllowCredentials(true);
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
@@ -44,6 +48,7 @@ public class SecurityConfiguration {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http.authorizeHttpRequests(auth -> auth
+        .requestMatchers("/ws/**").permitAll()
         .requestMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll()
         .requestMatchers(HttpMethod.GET, "/chat_room/*", "/chat_room").permitAll()
         .requestMatchers("/").permitAll()

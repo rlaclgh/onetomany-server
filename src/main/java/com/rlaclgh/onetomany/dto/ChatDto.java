@@ -8,11 +8,6 @@ import lombok.Data;
 @Data
 public class ChatDto {
 
-  public ChatDto(Long id, String message, String imageUrl) {
-    this.id = id;
-    this.message = message;
-    this.imageUrl = imageUrl;
-  }
 
   private Long id;
   private String message;
