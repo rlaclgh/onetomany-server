@@ -32,14 +32,14 @@ public class ChatRoomController {
 
 
   @PostMapping()
-  public ResponseEntity<ChannelDto> createChatRoom(
+  public ResponseEntity<ChatRoomDto> createChatRoom(
       @RequestBody @Valid CreateChatRoomDto createChatRoomDto,
       @CurrentUser() CustomUserDetails currentUser
   ) {
-    ChannelDto createChatRoomResponse = chatRoomService.createChatRoom(
+    ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(
         currentUser.getMember(),
         createChatRoomDto);
-    return ResponseEntity.created(null).body(createChatRoomResponse);
+    return ResponseEntity.created(null).body(chatRoomDto);
   }
 
 
@@ -59,16 +59,17 @@ public class ChatRoomController {
 
   @MyChatRoom
   @PatchMapping("/{chatRoomId}")
-  public ResponseEntity<ChannelDto> updateChatRoom(
+  public ResponseEntity<ChatRoomDto> updateChatRoom(
       @CurrentUser() CustomUserDetails currentUser,
       @PathVariable("chatRoomId") Long chatRoomId,
       @RequestBody @Valid UpdateChatRoomDto updateChatRoomDto
   ) {
 
-    ChannelDto channelDto = this.chatRoomService.updateChatRoom(currentUser.getMember(), chatRoomId,
+    ChatRoomDto chatRoomDto = this.chatRoomService.updateChatRoom(currentUser.getMember(),
+        chatRoomId,
         updateChatRoomDto);
 
-    return ResponseEntity.ok(channelDto);
+    return ResponseEntity.ok(chatRoomDto);
 
   }
 

@@ -86,8 +86,10 @@ class AuthControllerTest {
 
     String email = "rlaclgh12@gmail.com";
     String password = "password11";
+    String rePassword = "password11";
+    String nickname = "rlaclgh";
 
-    authService.signUp(new SignUpDto(email, password));
+    authService.signUp(new SignUpDto(email, nickname, password, rePassword));
 
     SignInDto signInDto = new SignInDto(
         email,
@@ -114,7 +116,9 @@ class AuthControllerTest {
   public void signUpTest() throws Exception {
     String email = "rlaclgh000011123@gmail.com";
     String password = "password11";
-    SignUpDto signUpDto = new SignUpDto(email, password);
+    String rePassword = "password11";
+    String nickname = "rlaclgh";
+    SignUpDto signUpDto = new SignUpDto(email, nickname, password, rePassword);
 
     mockMvc.perform(
             post("/auth/sign-up")

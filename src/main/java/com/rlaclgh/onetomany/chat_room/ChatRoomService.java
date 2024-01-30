@@ -29,7 +29,7 @@ public class ChatRoomService {
   private ChannelRepository channelRepository;
 
 
-  public ChannelDto createChatRoom(Member member,
+  public ChatRoomDto createChatRoom(Member member,
       CreateChatRoomDto createChatRoomDto
   ) {
 
@@ -42,12 +42,12 @@ public class ChatRoomService {
     Channel channel = channelRepository.save(
         new Channel(true, chatRoom, member));
 
-    return new ChannelDto(channel.getId(), channel.getIsHost(), new ChatRoomDto(
+    return new ChatRoomDto(
         channel.getChatRoom().getId(),
         channel.getChatRoom().getName(),
         channel.getChatRoom().getImageUrl(),
         channel.getChatRoom().getDescription()
-    ));
+    );
 
 
   }
@@ -82,7 +82,7 @@ public class ChatRoomService {
 
 
   @Transactional
-  public ChannelDto updateChatRoom(Member member, Long chatRoomId,
+  public ChatRoomDto updateChatRoom(Member member, Long chatRoomId,
       UpdateChatRoomDto updateChatRoomDto) {
 
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
@@ -103,12 +103,12 @@ public class ChatRoomService {
     Channel channel = channelRepository.findByOwnerIdAndChatRoomId(member.getId(),
         chatRoom.getId());
 
-    return new ChannelDto(channel.getId(), channel.getIsHost(), new ChatRoomDto(
+    return new ChatRoomDto(
         channel.getChatRoom().getId(),
         channel.getChatRoom().getName(),
         channel.getChatRoom().getImageUrl(),
         channel.getChatRoom().getDescription()
-    ));
+    );
 
 
   }

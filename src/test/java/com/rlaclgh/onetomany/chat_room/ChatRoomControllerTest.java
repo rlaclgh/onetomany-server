@@ -20,7 +20,7 @@ import com.rlaclgh.onetomany.auth.AuthService;
 import com.rlaclgh.onetomany.config.CustomUserDetails;
 import com.rlaclgh.onetomany.config.CustomUserDetailsService;
 import com.rlaclgh.onetomany.config.RestDocsConfig;
-import com.rlaclgh.onetomany.dto.ChannelDto;
+import com.rlaclgh.onetomany.dto.ChatRoomDto;
 import com.rlaclgh.onetomany.dto.CreateChatRoomDto;
 import com.rlaclgh.onetomany.dto.SignInDto;
 import com.rlaclgh.onetomany.dto.SignUpDto;
@@ -109,8 +109,11 @@ class ChatRoomControllerTest {
 
     // Given
     String email = "rlaclgh11@gmail.com";
+    String nickname = "rlaclgh";
     String password = "password11";
-    authService.signUp(new SignUpDto(email, password));
+    String rePassword = "password11";
+
+    authService.signUp(new SignUpDto(email, nickname, password, rePassword));
     String token = authService.signIn(new SignInDto(email, password));
 
     // When
@@ -127,19 +130,17 @@ class ChatRoomControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + token)
         )
-        .andExpect(jsonPath("$.chatRoom.name").value(name))
-        .andExpect(jsonPath("$.chatRoom.imageUrl").value(imageUrl))
-        .andExpect(jsonPath("$.chatRoom.description").value(description))
+        .andExpect(jsonPath("$.name").value(name))
+        .andExpect(jsonPath("$.imageUrl").value(imageUrl))
+        .andExpect(jsonPath("$.description").value(description))
         .andExpect(status().isCreated())
 
         .andDo(restDocs.document(
             responseFields(
-                fieldWithPath("id").description("채널 ID"),
-                fieldWithPath("isHost").description("채팅방 호스트여부"),
-                fieldWithPath("chatRoom.id").description("채팅방 ID"),
-                fieldWithPath("chatRoom.name").description("채팅방 이름"),
-                fieldWithPath("chatRoom.imageUrl").description("채팅방 이미지"),
-                fieldWithPath("chatRoom.description").description("채팅방 설명")
+                fieldWithPath("id").description("채팅방 ID"),
+                fieldWithPath("name").description("채팅방 이름"),
+                fieldWithPath("imageUrl").description("채팅방 이미지"),
+                fieldWithPath("description").description("채팅방 설명")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -158,12 +159,16 @@ class ChatRoomControllerTest {
 
     // Given
     String email1 = "rlaclgh11@gmail.com";
+    String nickname1 = "rlaclgh";
     String password1 = "password11";
-    authService.signUp(new SignUpDto(email1, password1));
+    String rePassword1 = "password11";
+    authService.signUp(new SignUpDto(email1, nickname1, password1, rePassword1));
 
     String email2 = "rlaclgh22@gmail.com";
-    String password2 = "password22";
-    authService.signUp(new SignUpDto(email2, password2));
+    String nickname2 = "rlaclgh";
+    String password2 = "password11";
+    String rePassword2 = "password11";
+    authService.signUp(new SignUpDto(email2, nickname2, password2, rePassword2));
 
     //// user1 이 채팅방 생성
     String name = "chatroom1";
@@ -172,7 +177,7 @@ class ChatRoomControllerTest {
 
     CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email1);
 
-    ChannelDto channelDto = chatRoomService.createChatRoom(userDetails.getMember(),
+    ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(userDetails.getMember(),
         new CreateChatRoomDto(
             name, imageUrl, description
         ));
@@ -181,26 +186,24 @@ class ChatRoomControllerTest {
     String token = authService.signIn(new SignInDto(email2, password2));
 
     mockMvc.perform(post("/chat_room/{chatRoomId}/subscribe",
-            channelDto.getChatRoom().getId())
+            chatRoomDto.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + token)
         )
-        .andExpect(jsonPath("$.chatRoom.name").value(channelDto.getChatRoom().getName()))
-        .andExpect(jsonPath("$.chatRoom.imageUrl").value(channelDto.getChatRoom().getImageUrl()))
+        .andExpect(jsonPath("$.chatRoom.name").value(chatRoomDto.getName()))
+        .andExpect(jsonPath("$.chatRoom.imageUrl").value(chatRoomDto.getImageUrl()))
         .andExpect(
-            jsonPath("$.chatRoom.description").value(channelDto.getChatRoom().getDescription()))
+            jsonPath("$.chatRoom.description").value(chatRoomDto.getDescription()))
         .andExpect(status().isOk())
         .andDo(restDocs.document(
             pathParameters(
                 parameterWithName("chatRoomId").description("채팅방 ID")
             ),
             responseFields(
-                fieldWithPath("id").description("채널 ID"),
-                fieldWithPath("isHost").description("채팅방 호스트여부"),
-                fieldWithPath("chatRoom.id").description("채팅방 ID"),
-                fieldWithPath("chatRoom.name").description("채팅방 이름"),
-                fieldWithPath("chatRoom.imageUrl").description("채팅방 이미지"),
-                fieldWithPath("chatRoom.description").description("채팅방 설명")
+                fieldWithPath("id").description("채팅방 ID"),
+                fieldWithPath("name").description("채팅방 이름"),
+                fieldWithPath("imageUrl").description("채팅방 이미지"),
+                fieldWithPath("description").description("채팅방 설명")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -216,9 +219,12 @@ class ChatRoomControllerTest {
   @Transactional
   public void canUpdateTest() throws Exception {
     // Given
-    String email = "rlaclgh11@gmail.com";
+    String email = "rlaclgh000011123@gmail.com";
     String password = "password11";
-    authService.signUp(new SignUpDto(email, password));
+    String rePassword = "password11";
+    String nickname = "rlaclgh";
+
+    authService.signUp(new SignUpDto(email, nickname, password, rePassword));
     String token = authService.signIn(new SignInDto(email, password));
 
     String name = "chatroom1";
@@ -227,7 +233,7 @@ class ChatRoomControllerTest {
 
     CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-    ChannelDto channelDto = chatRoomService.createChatRoom(userDetails.getMember(),
+    ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(userDetails.getMember(),
         new CreateChatRoomDto(
             name, imageUrl, description
         ));
@@ -242,26 +248,24 @@ class ChatRoomControllerTest {
         nameUpdated, imageUrlUpdated, descriptionUpdated
     );
 
-    mockMvc.perform(patch("/chat_room/{chatRoomId}", channelDto.getChatRoom().getId())
+    mockMvc.perform(patch("/chat_room/{chatRoomId}", chatRoomDto.getId())
             .content(objectMapper.writeValueAsString(updateChatRoomDto))
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + token)
         )
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.chatRoom.name").value(nameUpdated))
-        .andExpect(jsonPath("$.chatRoom.imageUrl").value(imageUrlUpdated))
-        .andExpect(jsonPath("$.chatRoom.description").value(descriptionUpdated))
+        .andExpect(jsonPath("$.name").value(nameUpdated))
+        .andExpect(jsonPath("$.imageUrl").value(imageUrlUpdated))
+        .andExpect(jsonPath("$.description").value(descriptionUpdated))
         .andDo(restDocs.document(
             pathParameters(
                 parameterWithName("chatRoomId").description("채팅방 ID")
             ),
             responseFields(
-                fieldWithPath("id").description("채널 ID"),
-                fieldWithPath("isHost").description("채팅방 호스트여부"),
-                fieldWithPath("chatRoom.id").description("채팅방 ID"),
-                fieldWithPath("chatRoom.name").description("채팅방 이름"),
-                fieldWithPath("chatRoom.imageUrl").description("채팅방 이미지"),
-                fieldWithPath("chatRoom.description").description("채팅방 설명")
+                fieldWithPath("id").description("채팅방 ID"),
+                fieldWithPath("name").description("채팅방 이름"),
+                fieldWithPath("imageUrl").description("채팅방 이미지"),
+                fieldWithPath("description").description("채팅방 설명")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -277,9 +281,13 @@ class ChatRoomControllerTest {
   public void getChatRoomsTest() throws Exception {
 
     // Given
-    String email = "rlaclgh11@gmail.com";
+
+    String email = "rlaclgh000011123@gmail.com";
     String password = "password11";
-    authService.signUp(new SignUpDto(email, password));
+    String rePassword = "password11";
+    String nickname = "rlaclgh";
+
+    authService.signUp(new SignUpDto(email, nickname, password, rePassword));
     CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
     String name1 = "chatroom1";

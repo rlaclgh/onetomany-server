@@ -15,8 +15,8 @@ public class ChannelDto {
   private Long id;
   private Boolean isHost;
   private ChatRoomDto chatRoom;
-  private Long unReadCount;
 
+  private Long unReadCount;
   private ChatDto lastChat;
 
 
