@@ -38,7 +38,7 @@ public class JwtUtil {
 
     String authorization = request.getHeader(JWT_HEADER);
 
-    if (authorization != null) {
+    if (authorization != null && !authorization.equals("Bearer ")) {
       return request.getHeader(JWT_HEADER).split(" ")[1];
     }
 

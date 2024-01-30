@@ -49,7 +49,10 @@ public class SecurityConfiguration {
 
     http.authorizeHttpRequests(auth -> auth
         .requestMatchers("/ws/**").permitAll()
+        .requestMatchers("/events/**").permitAll()
+        .requestMatchers("/channel/events/**").permitAll()
         .requestMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll()
+        .requestMatchers(HttpMethod.POST, "/feedback").permitAll()
         .requestMatchers(HttpMethod.GET, "/chat_room/*", "/chat_room").permitAll()
         .requestMatchers("/").permitAll()
 

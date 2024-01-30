@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "description"})
-public class Feedback {
+public class Feedback extends BaseEntity {
 
   @Id
   @GeneratedValue
@@ -23,4 +23,8 @@ public class Feedback {
   @Column()
   private String description;
 
+
+  public Feedback(String description) {
+    this.description = description;
+  }
 }

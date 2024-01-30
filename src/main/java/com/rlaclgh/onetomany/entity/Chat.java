@@ -29,6 +29,10 @@ public class Chat extends BaseEntity {
   @Column(name = "image_url")
   private String imageUrl;
 
+
+  @Column(name = "is_read")
+  private Boolean isRead;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "sender_id")
   private Member sender;
@@ -38,4 +42,11 @@ public class Chat extends BaseEntity {
   private Channel channel;
 
 
+  public Chat(String message, String imageUrl, Member sender, Channel channel) {
+    this.message = message;
+    this.imageUrl = imageUrl;
+    this.sender = sender;
+    this.channel = channel;
+    this.isRead = false;
+  }
 }

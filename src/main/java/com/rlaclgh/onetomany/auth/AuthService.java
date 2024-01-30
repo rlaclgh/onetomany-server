@@ -43,7 +43,8 @@ public class AuthService {
 
     Member member = new Member(
         signUpDto.getEmail(),
-        passwordEncoder.encode(signUpDto.getPassword())
+        passwordEncoder.encode(signUpDto.getPassword()),
+        signUpDto.getNickname()
     );
 
     member.setRole(roleRepository.getReferenceById(RoleEnum.USER.getId()));

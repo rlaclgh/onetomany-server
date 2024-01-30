@@ -31,6 +31,10 @@ public class ChannelService {
 
       Chat chat = chatRepository.findFirstByChannelIdOrderByCreatedAtDesc(channel.getId());
 
+      long unReadCount = chatRepository.countByIsReadAndChannelId(false, channel.getId());
+
+      channel.setUnReadCount(unReadCount);
+
       if (chat != null) {
         channel.setLastChat(new ChatDto(chat));
       } else {

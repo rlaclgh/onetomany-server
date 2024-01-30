@@ -50,7 +50,8 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
     JwtUtil jwtUtil = ctx.getBean(JwtUtil.class);
 
     String token = jwtUtil.getTokenFromHeader(request);
-    if (token != null) {
+
+    if (token != null && !token.isEmpty()) {
 
       try {
         Claims claims = jwtUtil.getClaimsFromToken(token);

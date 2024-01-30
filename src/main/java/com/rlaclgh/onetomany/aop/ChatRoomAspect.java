@@ -21,8 +21,6 @@ public class ChatRoomAspect {
   @Before("@annotation(com.rlaclgh.onetomany.aop.MyChatRoom)")
   public void checkIfMyChatRoom(JoinPoint joinPoint) throws NotFoundException {
 
-    System.out.println("chatRoomId1234");
-
     Object[] args = joinPoint.getArgs();
 
     CustomUserDetails currentUser = null;
@@ -42,8 +40,6 @@ public class ChatRoomAspect {
     if (!chatRoom.getOwner().getId().equals(currentUser.getMember().getId())) {
       throw new NotFoundException();
     }
-
-    System.out.println("chatRoomId" + chatRoomId);
 
 
   }

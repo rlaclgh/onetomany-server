@@ -16,6 +16,13 @@ public class SignUpDto {
   private String email;
 
   @NotNull
+  private String nickname;
+
+  @NotNull
   @Pattern(regexp = "(?=.*\\d)(?=.*[a-z]).{8,}")
   private String password;
+
+  @NotNull
+  @Pattern(regexp = "(?=.*\\d)(?=.*[a-z]).{8,}")
+  private String rePassword;
 }

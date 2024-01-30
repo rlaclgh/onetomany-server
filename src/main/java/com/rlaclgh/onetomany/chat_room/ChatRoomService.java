@@ -33,6 +33,8 @@ public class ChatRoomService {
       CreateChatRoomDto createChatRoomDto
   ) {
 
+    String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
+
     ChatRoom chatRoom = chatRoomRepository.save(
         new ChatRoom(createChatRoomDto.getName(), createChatRoomDto.getImageUrl(),
             createChatRoomDto.getDescription(), member));

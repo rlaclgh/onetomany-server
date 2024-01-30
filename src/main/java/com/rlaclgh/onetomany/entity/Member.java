@@ -25,9 +25,10 @@ import lombok.ToString;
 @ToString(of = {"id", "email"})
 public class Member extends BaseEntity {
 
-  public Member(String email, String password) {
+  public Member(String email, String password, String nickname) {
     this.email = email;
     this.password = password;
+    this.nickname = nickname;
   }
 
   public Member(Long id, String email, String password) {
@@ -46,6 +47,8 @@ public class Member extends BaseEntity {
 
   @Column(unique = true)
   private String email;
+
+  private String nickname;
 
   @JsonIgnore
   private String password;
