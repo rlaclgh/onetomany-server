@@ -1,6 +1,8 @@
 package com.rlaclgh.onetomany;
 
+import jakarta.annotation.PostConstruct;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.UUID;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +22,12 @@ public class OnetomanyApplication {
   @Bean
   public AuditorAware<String> auditorProvider() {
     return () -> Optional.of(UUID.randomUUID().toString());
+  }
+
+  @PostConstruct
+  public void init() {
+    // timezone 설정
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
   }
 
 }
