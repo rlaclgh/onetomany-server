@@ -190,6 +190,7 @@ class ChatRoomControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + token)
         )
+        .andExpect(jsonPath("$.isHost").value(false))
         .andExpect(jsonPath("$.chatRoom.name").value(chatRoomDto.getName()))
         .andExpect(jsonPath("$.chatRoom.imageUrl").value(chatRoomDto.getImageUrl()))
         .andExpect(
@@ -201,9 +202,13 @@ class ChatRoomControllerTest {
             ),
             responseFields(
                 fieldWithPath("id").description("채팅방 ID"),
-                fieldWithPath("name").description("채팅방 이름"),
-                fieldWithPath("imageUrl").description("채팅방 이미지"),
-                fieldWithPath("description").description("채팅방 설명")
+                fieldWithPath("isHost").description("채팅방 host 여부"),
+                fieldWithPath("unReadCount").description("안읽은 메시지 개수"),
+                fieldWithPath("lastChat").description("최근 채팅"),
+                fieldWithPath("chatRoom.id").description("채팅방 ID"),
+                fieldWithPath("chatRoom.name").description("채팅방 이름"),
+                fieldWithPath("chatRoom.imageUrl").description("채팅방 이미지"),
+                fieldWithPath("chatRoom.description").description("채팅방 설명")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -310,6 +315,8 @@ class ChatRoomControllerTest {
             responseFields(
                 fieldWithPath("[].id").description("채널 ID"),
                 fieldWithPath("[].isHost").description("채팅방 호스트여부"),
+                fieldWithPath("[].unReadCount").description("안읽은 메시지 개수"),
+                fieldWithPath("[].lastChat").description("최근 채팅"),
                 fieldWithPath("[].chatRoom.id").description("채팅방 ID"),
                 fieldWithPath("[].chatRoom.name").description("채팅방 이름"),
                 fieldWithPath("[].chatRoom.imageUrl").description("채팅방 이미지"),
