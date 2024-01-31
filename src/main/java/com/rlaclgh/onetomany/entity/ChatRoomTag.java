@@ -2,6 +2,7 @@ package com.rlaclgh.onetomany.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,8 +33,15 @@ public class ChatRoomTag {
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "tag_id")
+  @JoinColumn(name = "tag_id", insertable = false, updatable = false)
   private Tag tag;
 
 
+  @Column(name = "tag_id")
+  private Long tagId;
+
+  public ChatRoomTag(ChatRoom chatRoom, Long tagId) {
+    this.chatRoom = chatRoom;
+    this.tagId = tagId;
+  }
 }

@@ -20,6 +20,7 @@ import lombok.ToString;
 @ToString(of = {"id", "name"})
 public class Tag extends BaseEntity {
 
+
   @Id
   @GeneratedValue
   private Long id;
@@ -30,6 +31,10 @@ public class Tag extends BaseEntity {
   @JsonIgnore
   @OneToMany(mappedBy = "tag")
   List<ChatRoomTag> chatRoomTags = new ArrayList<>();
+
+  public Tag(String name) {
+    this.name = name;
+  }
 
 
 }

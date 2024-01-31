@@ -7,10 +7,12 @@ import com.rlaclgh.onetomany.dto.CreateChatRoomDto;
 import com.rlaclgh.onetomany.dto.UpdateChatRoomDto;
 import com.rlaclgh.onetomany.entity.Channel;
 import com.rlaclgh.onetomany.entity.ChatRoom;
+import com.rlaclgh.onetomany.entity.ChatRoomTag;
 import com.rlaclgh.onetomany.entity.Member;
 import com.rlaclgh.onetomany.exception.CustomException;
 import com.rlaclgh.onetomany.repository.ChannelRepository;
 import com.rlaclgh.onetomany.repository.ChatRoomRepository;
+import com.rlaclgh.onetomany.repository.ChatRoomTagRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +30,25 @@ public class ChatRoomService {
   @Autowired
   private ChannelRepository channelRepository;
 
+  @Autowired
+  private ChatRoomTagRepository chatRoomTagRepository;
+
 
   public ChatRoomDto createChatRoom(Member member,
       CreateChatRoomDto createChatRoomDto
   ) {
 
-    String imageUrl = "https://i.pinimg.com/564x/6a/95/83/6a958390de7924f68e1dfbd57d8c41d6.jpg";
-
     ChatRoom chatRoom = chatRoomRepository.save(
         new ChatRoom(createChatRoomDto.getName(), createChatRoomDto.getImageUrl(),
             createChatRoomDto.getDescription(), member));
+
+    long[] tagIds = createChatRoomDto.getTagIds();
+    if (tagIds != null) {
+      for (long tagId : tagIds) {
+        chatRoomTagRepository.save(new ChatRoomTag(chatRoom, tagId));
+      }
+
+    }
 
     Channel channel = channelRepository.save(
         new Channel(true, chatRoom, member));

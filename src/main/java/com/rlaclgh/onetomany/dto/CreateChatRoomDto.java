@@ -21,4 +21,7 @@ public class CreateChatRoomDto {
   private String description;
 
 
+  private long[] tagIds;
+
+
 }
