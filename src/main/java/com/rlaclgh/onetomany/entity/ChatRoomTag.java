@@ -31,7 +31,7 @@ public class ChatRoomTag {
   private ChatRoom chatRoom;
 
 
-  @JsonIgnore
+  //  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "tag_id", insertable = false, updatable = false)
   private Tag tag;

@@ -125,7 +125,7 @@ public class ChatRoomService {
   }
 
 
-  public List<ChannelDto> getChatRooms() {
+  public List<ChatRoomDto> getChatRooms() {
     return chatRoomRepository.findChatRooms();
   }
 

@@ -74,8 +74,8 @@ public class ChatRoomController {
   }
 
   @GetMapping("")
-  public ResponseEntity<List<ChannelDto>> getChatRooms() {
-    List<ChannelDto> channels = chatRoomService.getChatRooms();
+  public ResponseEntity<List<ChatRoomDto>> getChatRooms() {
+    List<ChatRoomDto> channels = chatRoomService.getChatRooms();
     return ResponseEntity.ok(channels);
   }
 

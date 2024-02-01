@@ -1,11 +1,15 @@
 package com.rlaclgh.onetomany.repository;
 
-import com.querydsl.core.types.Projections;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.rlaclgh.onetomany.dto.ChannelDto;
 import com.rlaclgh.onetomany.dto.ChatRoomDto;
-import com.rlaclgh.onetomany.entity.QChannel;
+import com.rlaclgh.onetomany.dto.QChatRoomDto;
 import com.rlaclgh.onetomany.entity.QChatRoom;
+import com.rlaclgh.onetomany.entity.QChatRoomTag;
+import com.rlaclgh.onetomany.entity.QTag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,22 +22,23 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
   private JPAQueryFactory queryFactory;
 
   @Override
-  public List<ChannelDto> findChatRooms() {
+  public List<ChatRoomDto> findChatRooms() {
 
     QChatRoom chatRoom = QChatRoom.chatRoom;
-    QChannel channel = QChannel.channel;
+    QChatRoomTag chatRoomTag = QChatRoomTag.chatRoomTag;
+    QTag tag = QTag.tag;
 
     return queryFactory
-        .select(Projections.constructor(ChannelDto.class,
-                channel.id, channel.isHost,
-                Projections.constructor(ChatRoomDto.class,
-                    chatRoom.id, chatRoom.name, chatRoom.imageUrl, chatRoom.description)
-            )
+        .selectFrom(chatRoom)
+        .leftJoin(chatRoom.chatRoomTags, chatRoomTag)
+        .leftJoin(chatRoomTag.tag, tag)
+        .orderBy(
+            chatRoom.createdAt.desc()
         )
-        .from(chatRoom)
-        .leftJoin(channel)
-        .on(channel.chatRoom.id.eq(chatRoom.id).and(channel.isHost.isTrue()))
-        .fetchJoin()
-        .fetch();
+        .transform(groupBy(chatRoom.id)
+            .list(new QChatRoomDto(
+                chatRoom, list(tag)
+            ))
+        );
   }
 }

@@ -54,7 +54,7 @@ public class ChatRoom extends BaseEntity {
   @OneToMany(mappedBy = "chatRoom")
   List<Channel> channels = new ArrayList<>();
 
-  @JsonIgnore
+  //  @JsonIgnore
   @OneToMany(mappedBy = "chatRoom")
   List<ChatRoomTag> chatRoomTags = new ArrayList<>();
 
