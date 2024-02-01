@@ -7,4 +7,7 @@ public interface ChatRoomRepositoryCustom {
 
   List<ChatRoomDto> findChatRooms();
 
+
+  ChatRoomDto findChatRoom(long chatRoomId);
+
 }

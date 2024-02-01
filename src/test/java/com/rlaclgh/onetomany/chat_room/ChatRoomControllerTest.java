@@ -140,7 +140,8 @@ class ChatRoomControllerTest {
                 fieldWithPath("id").description("채팅방 ID"),
                 fieldWithPath("name").description("채팅방 이름"),
                 fieldWithPath("imageUrl").description("채팅방 이미지"),
-                fieldWithPath("description").description("채팅방 설명")
+                fieldWithPath("description").description("채팅방 설명"),
+                fieldWithPath("tags").description("채팅방 태그")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -208,7 +209,8 @@ class ChatRoomControllerTest {
                 fieldWithPath("chatRoom.id").description("채팅방 ID"),
                 fieldWithPath("chatRoom.name").description("채팅방 이름"),
                 fieldWithPath("chatRoom.imageUrl").description("채팅방 이미지"),
-                fieldWithPath("chatRoom.description").description("채팅방 설명")
+                fieldWithPath("chatRoom.description").description("채팅방 설명"),
+                fieldWithPath("chatRoom.tags").description("채팅방 태그")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -270,7 +272,8 @@ class ChatRoomControllerTest {
                 fieldWithPath("id").description("채팅방 ID"),
                 fieldWithPath("name").description("채팅방 이름"),
                 fieldWithPath("imageUrl").description("채팅방 이미지"),
-                fieldWithPath("description").description("채팅방 설명")
+                fieldWithPath("description").description("채팅방 설명"),
+                fieldWithPath("tags").description("채팅방 태그")
             ), requestHeaders(
                 headerWithName("Authorization").description("The authorization header")
                     .attributes(
@@ -313,14 +316,11 @@ class ChatRoomControllerTest {
         .andExpectAll(status().isOk())
         .andDo(restDocs.document(
             responseFields(
-                fieldWithPath("[].id").description("채널 ID"),
-                fieldWithPath("[].isHost").description("채팅방 호스트여부"),
-                fieldWithPath("[].unReadCount").description("안읽은 메시지 개수"),
-                fieldWithPath("[].lastChat").description("최근 채팅"),
-                fieldWithPath("[].chatRoom.id").description("채팅방 ID"),
-                fieldWithPath("[].chatRoom.name").description("채팅방 이름"),
-                fieldWithPath("[].chatRoom.imageUrl").description("채팅방 이미지"),
-                fieldWithPath("[].chatRoom.description").description("채팅방 설명")
+                fieldWithPath("[].id").description("채팅방 ID"),
+                fieldWithPath("[].name").description("채팅방 이름"),
+                fieldWithPath("[].imageUrl").description("채팅방 이미지"),
+                fieldWithPath("[].description").description("채팅방 설명"),
+                fieldWithPath("[].tags").description("채팅방 태그")
             )
         ));
 

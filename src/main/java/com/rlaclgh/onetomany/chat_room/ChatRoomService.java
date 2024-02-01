@@ -131,15 +131,9 @@ public class ChatRoomService {
 
 
   public ChatRoomDto getChatRoom(Long chatRoomId) {
-    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "존재하지 않은 채팅방입니다."));
+    ChatRoomDto chatRoomDto = chatRoomRepository.findChatRoom(chatRoomId);
 
-    return new ChatRoomDto(
-        chatRoom.getId(),
-        chatRoom.getName(),
-        chatRoom.getImageUrl(),
-        chatRoom.getDescription()
-    );
+    return chatRoomDto;
 
 
   }

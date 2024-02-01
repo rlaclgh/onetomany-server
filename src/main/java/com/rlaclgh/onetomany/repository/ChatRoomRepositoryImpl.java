@@ -41,4 +41,27 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
             ))
         );
   }
+
+  @Override
+  public ChatRoomDto findChatRoom(long chatRoomId) {
+
+    QChatRoom chatRoom = QChatRoom.chatRoom;
+    QChatRoomTag chatRoomTag = QChatRoomTag.chatRoomTag;
+    QTag tag = QTag.tag;
+
+    return queryFactory
+        .selectFrom(chatRoom)
+        .leftJoin(chatRoom.chatRoomTags, chatRoomTag)
+        .leftJoin(chatRoomTag.tag, tag)
+        .where(chatRoom.id.eq(chatRoomId))
+        .transform(groupBy(chatRoom.id)
+            .list(new QChatRoomDto(
+                chatRoom, list(tag)
+            ))
+        ).stream().findFirst().orElse(null);
+
+
+  }
+
+
 }
