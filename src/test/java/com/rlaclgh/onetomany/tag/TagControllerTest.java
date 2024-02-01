@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rlaclgh.onetomany.auth.AuthService;
-import com.rlaclgh.onetomany.config.CustomUserDetailsService;
 import com.rlaclgh.onetomany.config.RestDocsConfig;
 import com.rlaclgh.onetomany.dto.CreateTagDto;
 import com.rlaclgh.onetomany.dto.SignInDto;
@@ -57,10 +56,6 @@ class TagControllerTest {
 
   @Autowired
   protected RestDocumentationResultHandler restDocs;
-
-
-  @Autowired
-  private CustomUserDetailsService customUserDetailsService;
 
 
   @Autowired
